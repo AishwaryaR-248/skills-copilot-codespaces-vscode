@@ -1,12 +1,26 @@
-//create web server
-const express = require('express')
-const app = express()
-
-//parse json
-app.use(express.json())
-
-//create web server
-const port = 3000
-app.listen(port, () => {
-  console.log('Server is running on port 3000')
-})
+// create web server
+var http = require('http');
+var url = require('url');
+var items = [];
+var server = http.createServer(function(req, res){
+    switch(req.method){
+        case 'POST':
+            var item = '';
+            req.setEncoding('utf8');
+            req.on('data', function(chunk){
+                item += chunk;
+            });
+            req.on('end', function(){
+                items.push(item);
+                res.end('OK\n');
+            });
+            break;
+        case 'GET':
+            items.forEach(function(item, i){
+                res.write(i + ') ' + item + '\n');
+            });
+            res.end();
+            break;
+    }
+});
+server.listen(3000);
